@@ -12,4 +12,5 @@ class Task(models.Model):
     deadline = models.DateField()
 
     def __str__(self):
+        username = self.user.username if self.user else 'Not set'
         return f'Task {self.name} was created by {self.creator} and will be executed by {self.executor} before {self.deadline}. STATUS {self.is_done}'
