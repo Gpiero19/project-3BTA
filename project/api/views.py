@@ -33,3 +33,9 @@ class UserCreateView(APIView):
             'email': user.email
         }
         return Response(user_data, status=status.HTTP_201_CREATED)
+    
+class ClearDatabaseView(APIView):
+    def post(self, request):
+        Task.objects.all().delete()
+        User.objects.all().delete()
+        return Response({'message': 'All data cleared successfully'}, status=200)

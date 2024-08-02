@@ -14,5 +14,5 @@ urlpatterns = [
     # path('user-tasks/', UserTasksAPIView.as_view(), name='my-tasks'),
     # path('become-executor/<int:task_id>/', BecomeExecutorAPIView.as_view(), name='become-executor'),
     # path('mark-task-done/<int:task_id>/', MarkTaskDoneAPIView.as_view(), name='mark-task-done'),
-    # path('clear_db/', ClearDatabaseView.as_view(), name='clear_db'),
+    path('clear_db/', ClearDatabaseView.as_view(), name='clear_db'),
 ]
