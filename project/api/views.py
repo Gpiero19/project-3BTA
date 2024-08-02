@@ -6,37 +6,38 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, views, status
-from rest_framework.permissions import IsAuthenticated
+from .serializer import *
 
 
 # Create your views here.
 
 class UserCreateView(APIView):
+    model = User
+    serializer_class = CreateUserSerializers
 
     def post(self, request):
-        # Extract the data from the request
-        username = request.data.get('username')
-        password = request.data.get('password')
-        email = request.data.get('email')
-
-        # Check for missing fields
-        if not username or not password or not email:
-            return Response({'error': 'Username, password, and email are required'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Check if the username already exists
-        if User.objects.filter(username=username).exists():
-            return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Create a new user
-        user = User.objects.create_user(username=username, password=password, email=email)
-
-        # Prepare the response data
-        user_data = {
-            'id': user.id,
-            'username': user.username,
-            'email': user.email
-        }
-        return Response(user_data, status=status.HTTP_201_CREATED)
+        # Check for presence of username, password, and email
+        required_fields = ['username', 'password', 'email']     
+        for field in required_fields:
+            if field not in request.data:
+                return Response(
+                    {'error': 'Username, password, and email are required'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        # Check if a user with the specified username already exists
+        if User.objects.filter(username=request.data.get('username')).exists():
+            return Response(
+                {'error': 'Username already exists'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        # If all checks pass, proceed with serializer validation and user creation
+        serializer = self.get_serializer(data = request.data)
+        if serializers.is_valid():
+            user = serializer.save()
+            user.set_password(request.data.get('password'))
+            user.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
     
 class ClearDatabaseView(APIView):
     def post(self, request):
