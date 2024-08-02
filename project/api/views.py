@@ -60,7 +60,7 @@ class LoginView(views.APIView):
                 return Response({'token': token.key}, status=status.HTTP_200_OK)
         return Response({'error': 'invalid credentials'}, status= status.HTTP_401_UNAUTHORIZED)
     
-class LogoutView(views.APIview):
+class LogoutView(views.APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
