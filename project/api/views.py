@@ -11,7 +11,6 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 
-# Create your views here.
 
 class UserCreateView(APIView):
     model = User
@@ -34,12 +33,12 @@ class UserCreateView(APIView):
             )
         # If all checks pass, proceed with serializer validation and user creation
         serializer = self.get_serializer(data = request.data)
-        if serializers.is_valid():
+        if serializer.is_valid():
             user = serializer.save()
             user.set_password(request.data.get('password'))
             user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ClearDatabaseView(APIView):
     def post(self, request):
