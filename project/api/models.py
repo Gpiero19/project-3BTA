@@ -10,3 +10,6 @@ class Task(models.Model):
     cost = models.DecimalField(max_digits=8, decimal_places=2)
     is_done = models.BooleanField(default=False)
     deadline = models.DateField()
+
+    def __str__(self):
+        return f'Task {self.name} was created by {self.creator} and will be executed by {self.executor} before {self.deadline}. STATUS {self.is_done}'
