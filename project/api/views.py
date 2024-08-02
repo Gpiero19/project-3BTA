@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework import generics, views, status
 from .serializer import *
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -59,10 +61,10 @@ class LoginView(views.APIView):
         return Response({'error': 'invalid credentials'}, status= status.HTTP_401_UNAUTHORIZED)
     
 class LogoutView(views.APIview):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
-    def post(request, *args, **kwargs):
-        auth.logout(request)
-        data = {
-            "message": "Successfully logged out",
-        }
+    def post(self, request):
+        request.user.auth_token.delete()
+        data = {"message": "Successfully logged out"}
         return Response(data, status=status.HTTP_200_OK)
