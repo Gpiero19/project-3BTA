@@ -5,7 +5,7 @@ from .views import *
 urlpatterns = [
     path('user/create/', UserCreateView.as_view(), name='user_create'),
     path('login/', LoginView.as_view(), name='login'),
-    # path('logout/', LogoutView.as_view(), name='logout'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     # path('task/create/', TaskCreateView.as_view(), name='task_create'),
     # path('tasks-created-by-user/', TasksCreatedByUser.as_view(), name='user_tasks'),
     # path('user-tasks-stats/', UserTasksStatsAPIView.as_view(), name='user-tasks-stats'),
