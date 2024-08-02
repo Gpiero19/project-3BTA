@@ -12,11 +12,11 @@ from rest_framework.permissions import IsAuthenticated
 
 
 
-class UserCreateView(APIView):
-    model = User
+class UserCreateView(generics.CreateAPIView):
+    queryset = User.objects.all()
     serializer_class = CreateUserSerializers
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         # Check for presence of username, password, and email
         required_fields = ['username', 'password', 'email']     
         for field in required_fields:
@@ -25,21 +25,18 @@ class UserCreateView(APIView):
                     {'error': 'Username, password, and email are required'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+            
         # Check if a user with the specified username already exists
         if User.objects.filter(username=request.data.get('username')).exists():
             return Response(
                 {'error': 'Username already exists'},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
         # If all checks pass, proceed with serializer validation and user creation
-        serializer = self.get_serializer(data = request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            user.set_password(request.data.get('password'))
-            user.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        return super().post(request, *args, **kwargs)
+
+
 class ClearDatabaseView(APIView):
     def post(self, request):
         Task.objects.all().delete()
