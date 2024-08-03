@@ -10,6 +10,7 @@ from .serializer import *
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .forms import * 
+from django.views.generic import ListView
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -98,8 +99,13 @@ class TaskCreateView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class TasksCreatedByUser():
-    pass
+class TasksCreatedByUser(generics.ListAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Task.objects.filter(creator=user)
 
 class TaskWithExecutorAPIView():
     pass
