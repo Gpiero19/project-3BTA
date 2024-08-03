@@ -46,3 +46,14 @@ class CreateUserSerializers(serializers.ModelSerializer):
             raise serializers.ValidationError("Username already exists")
         
         return data
+    
+class TaskWithExecutorSerializer(serializers.ModelSerializer):
+    executor = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Task
+        fields = ['executor', 'name', 'cost', 'deadline']
+
+    def get_executor(self, obj):
+        # Return "undefined" if the executor is not set; otherwise, return the executor's ID.
+        return obj.executor.id if obj.executor else "undefined"

@@ -107,5 +107,8 @@ class TasksCreatedByUser(generics.ListAPIView):
         user = self.request.user
         return Task.objects.filter(creator=user)
 
-class TaskWithExecutorAPIView():
-    pass
+class TaskWithExecutorAPIView(generics.ListAPIView):
+    serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        return Task.objects.all()
