@@ -1,13 +1,14 @@
 from rest_framework import serializers
 from .models import *
 
-class TaskSerializers(serializers.ModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = '__all__'
+        fields = ['id', 'name', 'creator', 'executor', 'cost', 'is_done', 'deadline']
+        read_only_fields = ['creator', 'is_done', 'deadline']
 
 class UserSerializers(serializers.ModelSerializer):
-    task_set = TaskSerializers(many=True)
+    task_set = TaskSerializer(many=True)
     class Meta:
         model = User
         fields =  ['username', 'first_name', 'last_name', 'task_set']

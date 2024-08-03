@@ -16,3 +16,9 @@ urlpatterns = [
     # path('mark-task-done/<int:task_id>/', MarkTaskDoneAPIView.as_view(), name='mark-task-done'),
     path('clear_db/', ClearDatabaseView.as_view(), name='clear_db'),
 ]
+
+
+# {                 #loginview
+# ('name': 'user1'),
+# ('password': 'pass1')
+# }

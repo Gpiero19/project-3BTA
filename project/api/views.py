@@ -9,7 +9,7 @@ from rest_framework import generics, views, status
 from .serializer import *
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+from .forms import * 
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -64,3 +64,42 @@ class LogoutView(views.APIView):
         request.user.auth_token.delete()
         data = {"message": "Successfully logged out"}
         return Response(data, status=status.HTTP_200_OK)
+    
+class TaskCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data.copy()
+        
+        # Specify the creator as the current authenticated user
+        creator = request.user
+        data['creator'] = creator.id
+
+        if 'executor' in data and data['executor'] == str(creator.id):
+            return Response(
+                {'error': 'The creator of a task cannot be its executor'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Check if the specified executor exists
+        if 'executor' in data:
+            executor_id = data['executor']
+            if executor_id:
+                try:
+                    executor = User.objects.get(id=executor_id)
+                except User.DoesNotExist:
+                    data['executor'] = None
+
+        # Serialize and validate the data
+        serializer = TaskSerializer(data=data)
+        if serializer.is_valid():
+            task = serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class TasksCreatedByUser():
+    pass
+
+class TaskWithExecutorAPIView():
+    pass
