@@ -112,3 +112,12 @@ class TaskWithExecutorAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         return Task.objects.all()
+    
+class UserTasksAPIView(generics.ListCreateAPIView): #check if all fields needed are shown
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        return Task.objects.filter(User=User)
