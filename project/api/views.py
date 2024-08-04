@@ -121,3 +121,14 @@ class UserTasksAPIView(generics.ListCreateAPIView): #check if all fields needed 
 
     def get_queryset(self):
         return Task.objects.filter(User=User)
+    
+class UserTasksStatsAPIView():
+    pass
+
+class UnassignedTasksAPIView():
+    serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Task.objects.filter(executor=None, sorted=) #needs to be sorted in ascending order
