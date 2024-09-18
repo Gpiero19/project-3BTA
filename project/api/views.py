@@ -47,7 +47,7 @@ class UserCreateView(generics.CreateAPIView):
 Hint: To work with the `User` model and send HTTP responses, use the appropriate functions from Django REST Framework: `User.objects.create_user`, `Response`.'''
 
 class ClearDatabaseView(APIView):
-    def post(self, request):
+    def get(self, request):
         Task.objects.all().delete()
         User.objects.all().delete()
         return Response({'message': 'All data cleared successfully'}, status=200)
@@ -63,7 +63,7 @@ class LoginView(views.APIView):
             if user:
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({'token': token.key}, status=status.HTTP_200_OK)
-        return Response({'error': 'invalid credentials'}, status= status.HTTP_401_UNAUTHORIZED)
+        return Response({'error': 'Invalid credentials'}, status= status.HTTP_401_UNAUTHORIZED)
     
 class LogoutView(views.APIView):
     authentication_classes = [TokenAuthentication]

@@ -19,6 +19,11 @@ urlpatterns = [
 
 
 # {                 #loginview
-# ('name': 'user1'),
+# ('name': 'name1'),
 # ('password': 'pass1')
 # }
+
+{
+    "username" : "user1",
+    "password": "themark1"
+}
